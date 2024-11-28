@@ -1,24 +1,28 @@
 package com.example.notifly.config;
 
-import com.example.notifly.handler.NotificationWebSocketHandler;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
-import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
-import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
+import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 @Configuration
-@EnableWebSocket
-public class WebSocketConfig implements WebSocketConfigurer {
+@EnableWebSocketMessageBroker
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    private final NotificationWebSocketHandler notificationWebSocketHandler;
-
-    public WebSocketConfig(NotificationWebSocketHandler notificationWebSocketHandler) {
-        this.notificationWebSocketHandler = notificationWebSocketHandler;
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry registry) {
+        // Enables a simple broker for sending messages to clients
+        registry.enableSimpleBroker("/topic", "/queue");
+        // Prefix for application destination mapping
+        registry.setApplicationDestinationPrefixes("/app");
     }
 
     @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(notificationWebSocketHandler, "/notifications")
-                .setAllowedOrigins("*");
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        // Registers the endpoint for WebSocket connections
+        registry.addEndpoint("/notifications")
+                .setAllowedOrigins("*")
+                .withSockJS(); // Fallback option for browsers that don’t support WebSockets
     }
 }

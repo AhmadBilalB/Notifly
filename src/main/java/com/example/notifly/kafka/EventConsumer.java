@@ -1,3 +1,4 @@
+/*
 package com.example.notifly.kafka;
 
 
@@ -15,3 +16,4 @@ public class EventConsumer {
         // Process the message here
     }
 }
+*/

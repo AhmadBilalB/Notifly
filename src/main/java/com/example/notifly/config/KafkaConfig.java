@@ -1,3 +1,4 @@
+/*
 package com.example.notifly.config;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -51,3 +52,4 @@ public class KafkaConfig {
         return new DefaultKafkaConsumerFactory<>(consumerConfigs());
     }
 }
+*/
