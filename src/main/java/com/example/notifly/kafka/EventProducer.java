@@ -1,4 +1,3 @@
-/*
 package com.example.notifly.kafka;
 
 import lombok.RequiredArgsConstructor;
@@ -14,4 +13,4 @@ public class EventProducer {
     public void sendEvent(String topic, String message) {
         kafkaTemplate.send(topic, message);
     }
-}*/
+}

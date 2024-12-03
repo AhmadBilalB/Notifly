@@ -4,6 +4,7 @@ import com.example.notifly.dto.NotificationEvent;
 import com.example.notifly.service.NotificationService;
 import com.example.notifly.service.WebSocketService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,7 +35,7 @@ public class NotificationController {
      * @param notificationEvent the notification event containing details.
      */
     @PostMapping("/send-email")
-    public void sendEmailNotification(
+    public ResponseEntity<String> sendEmailNotification(
             @RequestParam String contactId,
             @RequestParam String username,
             @RequestParam String password,
@@ -44,5 +45,7 @@ public class NotificationController {
 
         // Send email notification with the provided username and password
         notificationService.saveAndSendNotification(notificationEvent, username, password);
+
+        return ResponseEntity.ok("Email notification sent successfully.");
     }
 }

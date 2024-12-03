@@ -12,23 +12,49 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    // Resource Not Found Exception
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException ex) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("timestamp", LocalDateTime.now());
-        response.put("status", HttpStatus.NOT_FOUND.value());
-        response.put("error", "Resource Not Found");
-        response.put("message", ex.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    public ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        return buildErrorResponse(HttpStatus.NOT_FOUND, "Resource Not Found", ex.getMessage());
     }
 
+    // No Contacts Found Exception
+    @ExceptionHandler(NoContactsFoundException.class)
+    public ResponseEntity<Object> handleNoContactsFoundException(NoContactsFoundException ex) {
+        return buildErrorResponse(HttpStatus.NOT_FOUND, "No Contacts Found", ex.getMessage());
+    }
+
+    // Invalid Message Format Exception
+    @ExceptionHandler(InvalidMessageFormatException.class)
+    public ResponseEntity<Object> handleInvalidMessageFormat(InvalidMessageFormatException ex) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, "Invalid Message Format", ex.getMessage());
+    }
+
+    // Missing Data Exception
+    @ExceptionHandler(MissingDataException.class)
+    public ResponseEntity<Object> handleMissingData(MissingDataException ex) {
+        return buildErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY, "Missing Data", ex.getMessage());
+    }
+
+    // Service Unavailable Exception
+    @ExceptionHandler(ServiceUnavailableException.class)
+    public ResponseEntity<Object> handleServiceUnavailable(ServiceUnavailableException ex) {
+        return buildErrorResponse(HttpStatus.SERVICE_UNAVAILABLE, "Service Unavailable", ex.getMessage());
+    }
+
+    // Generic Exception Handler
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleGeneralException(Exception ex) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("timestamp", LocalDateTime.now());
-        response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-        response.put("error", "Internal Server Error");
-        response.put("message", ex.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<Object> handleGenericException(Exception ex) {
+        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", ex.getMessage());
+    }
+
+    // Helper method to build the error response
+    private ResponseEntity<Object> buildErrorResponse(HttpStatus status, String error, String message) {
+        Map<String, Object> errorDetails = new HashMap<>();
+        errorDetails.put("timestamp", LocalDateTime.now());
+        errorDetails.put("status", status.value());
+        errorDetails.put("error", error);
+        errorDetails.put("message", message);
+        return new ResponseEntity<>(errorDetails, status);
     }
 }
