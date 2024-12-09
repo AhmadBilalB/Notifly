@@ -3,6 +3,7 @@ package com.example.notifly.controller;
 import com.example.notifly.dto.NotificationEvent;
 import com.example.notifly.service.NotificationService;
 import com.example.notifly.service.WebSocketService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/notifications")
 @RequiredArgsConstructor
+@Tag(name = "Authentication", description = "APIs for user authentication and registration")
 public class NotificationController {
 
     private final WebSocketService webSocketService;

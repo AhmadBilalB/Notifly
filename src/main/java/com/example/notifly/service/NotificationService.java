@@ -63,6 +63,7 @@ public class NotificationService {
         }
     }
 
+
     /**
      * Sends a notification to a list of contacts and saves their statuses.
      *

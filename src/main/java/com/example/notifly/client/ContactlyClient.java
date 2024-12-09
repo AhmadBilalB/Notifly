@@ -29,9 +29,15 @@ public class ContactlyClient {
         this.contactlyBaseUrl = contactlyBaseUrl;
     }
 
-    @CircuitBreaker(name = "contactlyService", fallbackMethod = "fetchAllContactsFallback")
+    @CircuitBreaker(name = "contactlyService", fallbackMethod = "fetchTokenByIdFallback")
     public List<ContactDTO> fetchAllContacts(String username, String password) {
         String token = tokenService.getToken(username, password);
+
+        return fetchAllContactsByToken(token);
+    }
+
+    @CircuitBreaker(name = "contactlyService", fallbackMethod = "fetchAllContactsFallback")
+    public List<ContactDTO> fetchAllContactsByToken(String token) {
 
         String url = contactlyBaseUrl + "/contacts";
         HttpHeaders headers = new HttpHeaders();
@@ -41,6 +47,10 @@ public class ContactlyClient {
         ResponseEntity<ContactDTO[]> response = restTemplate.exchange(url, HttpMethod.GET, entity, ContactDTO[].class);
 
         return List.of(Objects.requireNonNull(response.getBody()));
+    }
+
+    public List<ContactDTO> fetchContactByGettingToken() {
+        return fetchAllContactsByToken("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhaG1hZC5iaWxhbEBhY2NsaXZvdXNieXRlLmNvbSIsImlhdCI6MTczMzc0ODA1NSwiZXhwIjoxNzMzODM0NDU1fQ.nv7ACmL0ptyf4jdlE1wJ___qqF5T0RuYkbw1E3COZwQ");
     }
 
     @CircuitBreaker(name = "contactlyService", fallbackMethod = "fetchContactByIdFallback")
@@ -65,5 +75,10 @@ public class ContactlyClient {
     private ContactDTO fetchContactByIdFallback(String username, String password, Long contactId, Throwable throwable) {
         log.error("Failed to fetch contact with ID {} for user {}: {}", contactId, username, throwable.getMessage());
         throw new ResourceNotFoundException("Failed to fetch contact with ID " + contactId + ": " + throwable.getMessage());
+    }
+
+    private List<ContactDTO> fetchTokenByIdFallback(Throwable throwable) {
+        log.error("Failed to fetch Token: {}", throwable.getMessage());
+        throw new ResourceNotFoundException("Failed to fetch Token: " + throwable.getMessage());
     }
 }

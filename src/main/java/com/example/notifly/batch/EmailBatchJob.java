@@ -20,10 +20,11 @@ public class EmailBatchJob implements Tasklet {
 
     @Override
     public RepeatStatus execute(StepContribution contribution, org.springframework.batch.core.scope.context.ChunkContext chunkContext) {
-        List<Notification> unsentNotifications = notificationRepository.findAll(); // Fetch unsent notifications
+        List<Notification> unsentNotifications = notificationRepository.findBySentFalse(); // Fetch unsent notifications
         unsentNotifications.forEach(notification -> {
             // Logic to send email
-            notification.setSent(true);
+            System.out.println("Sending email to: " + notification.getRecipient());
+            notification.setSent(true); // Mark as sent
             notificationRepository.save(notification);
         });
         return RepeatStatus.FINISHED;

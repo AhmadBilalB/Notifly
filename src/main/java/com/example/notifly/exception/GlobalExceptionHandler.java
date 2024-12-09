@@ -48,6 +48,13 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", ex.getMessage());
     }
 
+    // Batch Job Execution Exception
+    @ExceptionHandler(JobExecutionException.class)
+    public ResponseEntity<Object> handleJobExecutionException(JobExecutionException ex) {
+        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Batch Job Execution Error", ex.getMessage());
+    }
+
+
     // Helper method to build the error response
     private ResponseEntity<Object> buildErrorResponse(HttpStatus status, String error, String message) {
         Map<String, Object> errorDetails = new HashMap<>();

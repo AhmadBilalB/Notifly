@@ -18,18 +18,22 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authz -> authz
+
+                        // Allow access to the Swagger UI
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         // Permit access to send and send-email endpoints without authentication
-                        .requestMatchers("/api/notifications/send", "/api/notifications/send-email").permitAll()
+                        .requestMatchers("/api/notifications/send", "/api/notifications/send-email","/batch/trigger-email-batch").permitAll()
                         // Allow access to the H2 console
                         .requestMatchers("/h2-console/**").permitAll()
                         // Require authentication for other notification-related endpoints
                         .requestMatchers("/api/notifications/**").authenticated()
                         // Allow other requests without authentication
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
                 )
                 .formLogin(withDefaults())  // Enable form login (if needed)
                 .csrf(AbstractHttpConfigurer::disable)  // Disable CSRF for non-browser clients (Postman)
-                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+                .httpBasic(withDefaults());
 
         return http.build();
     }

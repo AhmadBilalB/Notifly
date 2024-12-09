@@ -27,6 +27,7 @@ public class EventConsumer {
     private final NotificationService notificationService;
 
 
+
     public EventConsumer(EmailTemplateService emailTemplateService, NotificationService notificationService) {
         this.emailTemplateService = emailTemplateService;
         this.objectMapper = new ObjectMapper();
