@@ -49,8 +49,8 @@ public class ContactlyClient {
         return List.of(Objects.requireNonNull(response.getBody()));
     }
 
-    public List<ContactDTO> fetchContactByGettingToken() {
-        return fetchAllContactsByToken("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhaG1hZC5iaWxhbEBhY2NsaXZvdXNieXRlLmNvbSIsImlhdCI6MTczMzc0ODA1NSwiZXhwIjoxNzMzODM0NDU1fQ.nv7ACmL0ptyf4jdlE1wJ___qqF5T0RuYkbw1E3COZwQ");
+    public List<ContactDTO> fetchContactByGettingToken(String jwtToken) {
+        return fetchAllContactsByToken(jwtToken);
     }
 
     @CircuitBreaker(name = "contactlyService", fallbackMethod = "fetchContactByIdFallback")

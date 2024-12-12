@@ -1,5 +1,6 @@
 package com.example.notifly.exception;
 
+import com.example.notifly.dto.ErrorResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -36,6 +37,11 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY, "Missing Data", ex.getMessage());
     }
 
+    @ExceptionHandler(NotificationSendException.class)
+    public ResponseEntity<Object> handleNotificationSendException(NotificationSendException ex) {
+        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Notification Send Error", ex.getMessage());
+    }
+
     // Service Unavailable Exception
     @ExceptionHandler(ServiceUnavailableException.class)
     public ResponseEntity<Object> handleServiceUnavailable(ServiceUnavailableException ex) {
@@ -54,14 +60,19 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Batch Job Execution Error", ex.getMessage());
     }
 
+    @ExceptionHandler(BatchJobExecutionException.class)
+    public ResponseEntity<Object> handleBatchJobExecutionException(BatchJobExecutionException ex) {
+        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Batch Job Execution Error", ex.getMessage());
+    }
 
-    // Helper method to build the error response
+
     private ResponseEntity<Object> buildErrorResponse(HttpStatus status, String error, String message) {
-        Map<String, Object> errorDetails = new HashMap<>();
-        errorDetails.put("timestamp", LocalDateTime.now());
-        errorDetails.put("status", status.value());
-        errorDetails.put("error", error);
-        errorDetails.put("message", message);
-        return new ResponseEntity<>(errorDetails, status);
+        ErrorResponseDTO errorResponse = new ErrorResponseDTO(
+                LocalDateTime.now(),
+                status.value(),
+                error,
+                message
+        );
+        return new ResponseEntity<>(errorResponse, status);
     }
 }

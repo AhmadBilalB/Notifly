@@ -43,7 +43,7 @@ public class BatchConfig {
                           ItemProcessor<List<ContactDTO>, List<ContactDTO>> processor,
                           ItemWriter<List<ContactDTO>> writer) {
         return new StepBuilder("emailStep", jobRepository)
-                .<List<ContactDTO>, List<ContactDTO>>chunk(10, transactionManager)  // Updated method
+                .<List<ContactDTO>, List<ContactDTO>>chunk(2, transactionManager)  // Updated method
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)

@@ -3,11 +3,14 @@ package com.example.notifly.batch;
 import com.example.notifly.client.ContactlyClient;
 import com.example.notifly.dto.ContactDTO;
 import com.example.notifly.service.EmailNotificationService;
+import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 
@@ -15,14 +18,18 @@ import java.util.List;
 public class BatchComponentsConfig {
 
     @Bean
-    public ItemReader<List<ContactDTO>> itemReader(ContactlyClient contactlyClient) {
+    @StepScope
+    public ItemReader<List<ContactDTO>> itemReader(ContactlyClient contactlyClient,@Value("#{jobParameters['jwtToken']}") String jwtToken) {
+
+        //return contactlyClient::fetchContactByGettingToken;
         return new ItemReader<>() {
-            private final List<ContactDTO> contacts = contactlyClient.fetchContactByGettingToken();
+            private final List<ContactDTO> contacts = contactlyClient.fetchContactByGettingToken(jwtToken);
             private int nextIndex = 0;
-            private static final int BATCH_SIZE = 2; // Define your batch size here
+            private static final int BATCH_SIZE = 10; // Define your batch size here
 
             @Override
             public List<ContactDTO> read() {
+
                 if (nextIndex < contacts.size()) {
                     int endIndex = Math.min(nextIndex + BATCH_SIZE, contacts.size());
                     List<ContactDTO> batch = contacts.subList(nextIndex, endIndex);

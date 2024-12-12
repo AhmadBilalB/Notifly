@@ -22,7 +22,7 @@ public class SecurityConfig {
                         // Allow access to the Swagger UI
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         // Permit access to send and send-email endpoints without authentication
-                        .requestMatchers("/api/notifications/send", "/api/notifications/send-email","/batch/trigger-email-batch").permitAll()
+                        .requestMatchers("/api/notifications/send", "/api/notifications/send-email","/batch/trigger-email-batch", "email-config").permitAll()
                         // Allow access to the H2 console
                         .requestMatchers("/h2-console/**").permitAll()
                         // Require authentication for other notification-related endpoints
